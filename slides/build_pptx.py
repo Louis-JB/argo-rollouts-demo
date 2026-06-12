@@ -102,6 +102,27 @@ def content(title, bullets):
     return s
 
 
+import os
+from PIL import Image as _PILImage
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _add_img(slide, rel_path, top=2.3, max_h=4.9):
+    """Centre une image sous le bandeau, en respectant le ratio."""
+    path = os.path.join(_HERE, rel_path)
+    iw, ih = _PILImage.open(path).size
+    ratio = iw / ih
+    h = max_h
+    w = h * ratio
+    max_w = 12.4
+    if w > max_w:
+        w = max_w
+        h = w / ratio
+    left = (13.333 - w) / 2
+    slide.shapes.add_picture(path, Inches(left), Inches(top), Inches(w), Inches(h))
+
+
 # ----------------------------------------------------------------------------
 B = lambda t, lvl=0, k='': (t, lvl, k)
 
@@ -213,27 +234,17 @@ content("Choix techniques clés", [
     B("(autonome ; variante Prometheus fournie pour la production)", 1),
 ])
 
-content("Démo 1 — Canary SAIN (promotion auto)", [
-    B("set image … :green  →  le rollout progresse :", 0, 'head'),
-    B("Step 1/9  setWeight 20%   ▸ 1 pod green / 4 pods blue", 0, 'code'),
-    B("Step 4/9  setWeight 40%   ▸ AnalysisRun lancé", 0, 'code'),
-    B('   probe ▸ "30/30 requetes en succes -> 100% (seuil 95%)  ANALYSE OK"', 0, 'code'),
-    B("Step 9/9  setWeight 100%  ▸ Healthy, stable = green", 0, 'code'),
-    B("", 0),
-    B("Analyse réussie → promotion automatique jusqu'à 100%.", 0, 'ok'),
+s_demo1 = content("Démo 1 — Canary SAIN (promotion auto)", [
+    B("nouvelle version → canary 20%→40% ; l'AnalysisRun sonde le canary :", 0, 'head'),
+    B('"30/30 requetes en succes -> 100% (seuil 95%)" → promotion automatique 100%', 0, 'ok'),
 ])
+_add_img(s_demo1, "img/demo-canary-inprogress.png", top=2.3)
 
-content("Démo 2 — Canary DÉFAILLANT (rollback auto)", [
-    B("set image … :bad-red  →  l'analyse sonde le canary :", 0, 'head'),
-    B("probe ▸ HTTP/1.1 500 Internal Server Error  (x25)", 0, 'code'),
-    B('probe ▸ "5/30 requetes en succes -> 16% (seuil 95%)  ANALYSE KO"', 0, 'code'),
-    B("Status: Degraded", 0, 'code'),
-    B('Message: RolloutAborted: Metric "http-success-rate" assessed Failed', 0, 'code'),
-    B("         due to failed (1) > failureLimit (0)", 0, 'code'),
-    B("", 0),
-    B("Analyse échouée → rollback automatique : trafic gardé sur green,", 0, 'ko'),
-    B("zéro impact utilisateur, zéro intervention humaine.", 0, 'ko'),
+s_demo2 = content("Démo 2 — Canary DÉFAILLANT (rollback auto)", [
+    B('bad-red → HTTP 500 ; sonde 5/30 = 16% → ANALYSE KO', 0, 'head'),
+    B("Metric Failed → RolloutAborted → trafic gardé sur green, 0 downtime", 0, 'ko'),
 ])
+_add_img(s_demo2, "img/demo-rollback.png", top=2.7, max_h=4.4)
 
 content("Difficultés rencontrées & solutions", [
     B("App sans /metrics → analyse Prometheus impossible", 0, 'head'),

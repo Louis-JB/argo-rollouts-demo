@@ -1,0 +1,39 @@
+Name:            rollouts-demo
+Namespace:       demo
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          3/9
+  SetWeight:     40
+  ActualWeight:  40
+Images:          argoproj/rollouts-demo:blue (canary)
+                 argoproj/rollouts-demo:green (stable)
+Replicas:
+  Desired:       5
+  Current:       5
+  Updated:       2
+  Ready:         5
+  Available:     5
+
+NAME                                                                 KIND         STATUS        AGE  INFO
+⟳ rollouts-demo                                                      Rollout      ॥ Paused      24m  
+├──# revision:5                                                                                      
+│  ├──⧉ rollouts-demo-774b46cfdc                                     ReplicaSet   ✔ Healthy     24m  canary
+│  │  ├──□ rollouts-demo-774b46cfdc-6z47x                            Pod          ✔ Running     50s  ready:1/1
+│  │  └──□ rollouts-demo-774b46cfdc-x99l2                            Pod          ✔ Running     14s  ready:1/1
+│  └──α rollouts-demo-774b46cfdc-5                                   AnalysisRun  ✔ Successful  14s  ✔ 1
+│     └──⊞ 6a10cc86-ffbc-4d2d-a71c-df3687acfea2.http-success-rate.1  Job          ✔ Successful  14s  
+├──# revision:4                                                                                      
+│  └──⧉ rollouts-demo-754fbfc964                                     ReplicaSet   ✔ Healthy     21m  stable
+│     ├──□ rollouts-demo-754fbfc964-tjwb5                            Pod          ✔ Running     21m  ready:1/1
+│     ├──□ rollouts-demo-754fbfc964-gh4z9                            Pod          ✔ Running     21m  ready:1/1
+│     └──□ rollouts-demo-754fbfc964-sbjfn                            Pod          ✔ Running     20m  ready:1/1
+├──# revision:3                                                                                      
+│  ├──⧉ rollouts-demo-7c84cfdcdb                                     ReplicaSet   • ScaledDown  19m  
+│  └──α rollouts-demo-7c84cfdcdb-3                                   AnalysisRun  ✖ Failed      18m  ✖ 1
+│     └──⊞ 021d463e-6109-4b46-93de-600d302f6668.http-success-rate.1  Job          ✖ Failed      18m  
+└──# revision:2                                                                                      
+   ├──α rollouts-demo-754fbfc964-2                                   AnalysisRun  ✔ Successful  21m  ✔ 1
+   │  └──⊞ 9d10e89c-9fb1-4c35-8675-83daa7774206.http-success-rate.1  Job          ✔ Successful  21m  
+   └──α rollouts-demo-754fbfc964-2-4                                 AnalysisRun  ✔ Successful  20m  ✔ 1
+      └──⊞ 0474fcd5-48ec-45ae-a020-26d5c0bf1b21.http-success-rate.1  Job          ✔ Successful  20m  
