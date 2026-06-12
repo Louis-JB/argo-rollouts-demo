@@ -350,8 +350,8 @@ card(s, 0.85, 4.15, 5.7, 2.55, "Environnement & astuce", [
     ("Le tag bad-red renvoie des HTTP 500", 'ko'),
     ("version « buggée » déterministe pour le rollback", 'sub'),
 ], size=14)
-add_pic(s, "img/ui-app.png", x=6.95, y=4.15, max_w=5.5, max_h=2.35)
-_text(s, 6.95, 6.52, 5.5, 0.3, [[R("Capture réelle de l'UI de l'app de démo", 11, MUTED)]])
+add_pic(s, "img/ui-canary-grid.png", x=6.95, y=4.15, max_w=5.5, max_h=2.35)
+_text(s, 6.95, 6.52, 5.5, 0.3, [[R("UI réelle : trafic réparti vert (canary) / bleu (stable)", 11, MUTED)]])
 
 # --- Choix techniques
 s = prs.slides.add_slide(BLANK); header(s, "Choix techniques clés", "Décisions d'implémentation")
@@ -386,6 +386,17 @@ card(s, 0.85, 1.75, 3.55, 4.6, "Scénario", [
     ("Trafic gardé sur green, 0 downtime", 'ok'),
 ], accent=RED, size=14)
 add_pic(s, "img/demo-rollback.png", x=4.65, y=1.95, max_w=7.9, max_h=4.3)
+
+# --- Observabilité / dashboard
+s = prs.slides.add_slide(BLANK); header(s, "Pilotage & observabilité", "Le dashboard Argo Rollouts")
+card(s, 0.85, 1.75, 3.55, 4.6, "Vue temps réel", [
+    ("Stratégie & poids actuel (40 %)", ''),
+    ("Révisions stable / canary", ''),
+    ("État des pods et analyses", ''),
+    ("Pause / Promote / Restart en 1 clic", ''),
+    ("Capture pendant un canary figé", 'mut'),
+], accent=BLUE, size=14)
+add_pic(s, "img/dashboard-canary.png", x=4.65, y=1.75, max_w=7.9, max_h=4.7)
 
 # --- REX
 s = prs.slides.add_slide(BLANK); header(s, "Bilan, avis & améliorations", "Conclusion")
