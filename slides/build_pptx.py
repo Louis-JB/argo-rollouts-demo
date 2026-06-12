@@ -240,6 +240,26 @@ for i, (n, t, d) in enumerate(items):
     _text(s, 1.95, y + 0.14, 10.3, 0.5, [[R(t, 19, WHITE, True)]])
     _text(s, 1.95, y + 0.55, 10.3, 0.4, [[R(d, 14, MUTED)]])
 
+# --- Pourquoi ce sujet
+s = prs.slides.add_slide(BLANK); header(s, "Pourquoi ce sujet ?", "Contexte & démarche du dossier")
+_text(s, 0.85, 1.6, 11.6, 0.95,
+      [[R("Kubernetes et le GitOps sont devenus les ", 16, TEXT),
+        R("standards de l'industrie", 16, WHITE, True),
+        R(" pour déployer et exploiter les applications. Dans cet écosystème, j'ai choisi de creuser le ", 16, TEXT),
+        R("déploiement progressif", 16, ACCENT, True), R(" avec Argo Rollouts.", 16, TEXT)]])
+card(s, 0.85, 2.75, 5.75, 3.6, "Pourquoi Argo Rollouts ?", [
+    ("Répond à un problème universel : déployer sans risque ni coupure", ''),
+    ("Brique concrète, très utilisée en entreprise", ''),
+    ("Même éditeur qu'ArgoCD (déjà au cœur du GitOps)", ''),
+    ("Sujet aligné avec mon intérêt pour le DevOps / SRE", ''),
+], size=14)
+card(s, 6.85, 2.75, 5.6, 3.6, "Démarche de ce dossier", [
+    ("Recherche : comprendre la techno et ses usages", ''),
+    ("Implémentation réelle sur un cluster Kubernetes", ''),
+    ("Captures et logs authentiques à l'appui", ''),
+    ("Document pensé pour se comprendre seul, sans oral", 'ok'),
+], accent=BLUE, size=14)
+
 # --- Le problème
 s = prs.slides.add_slide(BLANK); header(s, "Le problème : le Deployment classique", "Pourquoi aller plus loin")
 _text(s, 0.85, 1.65, 11.6, 0.8,
@@ -374,29 +394,26 @@ card(s, 0.85, 1.75, 3.55, 4.6, "Scénario", [
     ("30/30 = 100 % (seuil 95%)", 'ok'),
     ("Promotion auto à 100 %", 'ok'),
 ], accent=GREEN, size=14)
-add_pic(s, "img/demo-canary-inprogress.png", x=4.65, y=1.75, max_w=7.9, max_h=4.7)
+add_pic(s, "img/dashboard-demo1.png", x=4.55, y=1.65, max_w=8.0, max_h=4.6)
+_text(s, 4.55, 6.32, 8.0, 0.35,
+      [[R("Dashboard réel : étapes du canary à gauche, ", 11, MUTED),
+        R("analyse ✓ verte", 11, GREEN, True),
+        R(" sur la révision canary → la promotion se poursuit.", 11, MUTED)]])
 
 # --- Démo 2
 s = prs.slides.add_slide(BLANK); header(s, "Démo 2 — Canary défaillant", "Rollback automatique")
 card(s, 0.85, 1.75, 3.55, 4.6, "Scénario", [
     ("Déploiement de bad-red", ''),
-    ("Réponses HTTP 500", 'ko'),
-    ("Sonde : 5/30 = 16 %", 'ko'),
+    ("L'app renvoie des HTTP 500", 'ko'),
+    ("Sonde : 5/30 = 16 % (seuil 95)", 'ko'),
     ("Metric Failed → RolloutAborted", 'ko'),
-    ("Trafic gardé sur green, 0 downtime", 'ok'),
+    ("Trafic gardé sur stable, 0 downtime", 'ok'),
 ], accent=RED, size=14)
-add_pic(s, "img/demo-rollback.png", x=4.65, y=1.95, max_w=7.9, max_h=4.3)
-
-# --- Observabilité / dashboard
-s = prs.slides.add_slide(BLANK); header(s, "Pilotage & observabilité", "Le dashboard Argo Rollouts")
-card(s, 0.85, 1.75, 3.55, 4.6, "Vue temps réel", [
-    ("Stratégie & poids actuel (40 %)", ''),
-    ("Révisions stable / canary", ''),
-    ("État des pods et analyses", ''),
-    ("Pause / Promote / Restart en 1 clic", ''),
-    ("Capture pendant un canary figé", 'mut'),
-], accent=BLUE, size=14)
-add_pic(s, "img/dashboard-canary.png", x=4.65, y=1.75, max_w=7.9, max_h=4.7)
+add_pic(s, "img/dashboard-demo2.png", x=4.55, y=1.65, max_w=8.0, max_h=4.6)
+_text(s, 4.55, 6.32, 8.0, 0.35,
+      [[R("Dashboard réel : statut ", 11, MUTED), R("Degraded", 11, RED, True),
+        R(" et ", 11, MUTED), R("analyse ✕ rouge", 11, RED, True),
+        R(" → rollback automatique vers la version stable.", 11, MUTED)]])
 
 # --- REX
 s = prs.slides.add_slide(BLANK); header(s, "Bilan, avis & améliorations", "Conclusion")
@@ -415,16 +432,29 @@ card(s, 0.85, 4.9, 11.6, 1.55, "Améliorations possibles", [
      "notifications Slack · Blue-Green avec tests preview · multi-cluster ApplicationSet", 'mut'),
 ], accent=ACCENT, size=14)
 
-# --- Merci
+# --- Conclusion / dépôt
 s = prs.slides.add_slide(BLANK); _bg(s, BG_SECT)
 _rect(s, 0, 0, 0.22, 7.5, ACCENT)
-_text(s, 0.95, 2.5, 11.5, 1.2, [[R("Merci de votre attention", 44, WHITE, True)]])
-_rect(s, 1.0, 3.7, 3.0, 0.05, ACCENT)
-_text(s, 0.95, 3.95, 11.5, 0.6, [[R("Questions ?", 22, MUTED)]])
-code_box(s, 0.95, 4.9, 8.2, 1.0,
-         [("kubectl argo rollouts get rollout rollouts-demo --watch", GREEN)], size=15)
-_text(s, 0.95, 6.2, 11.5, 0.5,
-      [[R("github.com/Louis-JB/argo-rollouts-demo", 14, BLUE, True)]])
+_text(s, 0.95, 1.15, 11.5, 1.0, [[R("Pour aller plus loin", 38, WHITE, True)]])
+_rect(s, 1.0, 2.15, 3.0, 0.05, ACCENT)
+_text(s, 0.95, 2.4, 11.5, 0.7,
+      [[R("L'intégralité du projet (manifests, GitOps, CI, captures) est sur le dépôt :", 16, MUTED)]])
+# encart dépôt
+_round(s, 0.95, 3.15, 11.4, 1.0, PANEL, line=ACCENT, lw=1.5, radius=0.10)
+_text(s, 1.3, 3.15, 10.8, 1.0,
+      [[R("github.com/Louis-JB/argo-rollouts-demo", 22, BLUE, True, MONO)]],
+      anchor=MSO_ANCHOR.MIDDLE)
+# ce que contient le dépôt
+card(s, 0.95, 4.45, 5.6, 2.2, "Le dépôt contient", [
+    ("Manifests Kubernetes (Rollout, Analysis, Services)", ''),
+    ("Application ArgoCD (GitOps) + CI GitHub Actions", ''),
+    ("Diagrammes, runbook, captures réelles d'exécution", ''),
+], size=13)
+card(s, 6.75, 4.45, 5.6, 2.2, "Reproduire la démo", [
+    ("kubectl apply -k manifests/", 'mut'),
+    ("kubectl argo rollouts get rollout rollouts-demo --watch", 'mut'),
+    ("Tout est documenté dans le README", ''),
+], accent=GREEN, size=13)
 
 
 # ---------------------------------------------------------------- save
