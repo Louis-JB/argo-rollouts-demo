@@ -1,0 +1,86 @@
+# Prometheus minimaliste (1 pod, sans Grafana/Alertmanager) destiné à
+# scruter les métriques DU CONTRÔLEUR Argo Rollouts (rollout_info,
+# rollout_phase, analysis_run_*, etc.).
+#
+# OPTIONNEL : non requis par la démo (qui utilise l'analyse de type Job).
+# À déployer si vous voulez des dashboards/PromQL sur l'état des rollouts.
+#   kubectl apply -f monitoring/prometheus.yaml
+#   kubectl -n monitoring port-forward svc/prometheus 9090:9090
+#   # puis http://localhost:9090  (essayez la requête:  rollout_info  )
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ['localhost:9090']
+      - job_name: argo-rollouts
+        static_configs:
+          - targets: ['argo-rollouts-metrics.argo-rollouts.svc.cluster.local:8090']
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.54.1
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --storage.tsdb.retention.time=2h
+          ports:
+            - containerPort: 9090
+          resources:
+            requests:
+              cpu: 20m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus
+            - name: data
+              mountPath: /prometheus
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - name: http
+      port: 9090
+      targetPort: 9090

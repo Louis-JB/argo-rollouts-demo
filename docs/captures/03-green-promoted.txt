@@ -1,0 +1,30 @@
+Name:            rollouts-demo
+Namespace:       demo
+Status:          ✔ Healthy
+Strategy:        Canary
+  Step:          9/9
+  SetWeight:     100
+  ActualWeight:  100
+Images:          argoproj/rollouts-demo:green (stable)
+Replicas:
+  Desired:       5
+  Current:       5
+  Updated:       5
+  Ready:         5
+  Available:     5
+
+NAME                                                                 KIND         STATUS        AGE    INFO
+⟳ rollouts-demo                                                      Rollout      ✔ Healthy     5m10s  
+├──# revision:2                                                                                        
+│  ├──⧉ rollouts-demo-754fbfc964                                     ReplicaSet   ✔ Healthy     2m21s  stable
+│  │  ├──□ rollouts-demo-754fbfc964-tjwb5                            Pod          ✔ Running     2m21s  ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-gh4z9                            Pod          ✔ Running     101s   ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-sbjfn                            Pod          ✔ Running     63s    ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-zcm7r                            Pod          ✔ Running     38s    ready:1/1
+│  │  └──□ rollouts-demo-754fbfc964-p9dm5                            Pod          ✔ Running     13s    ready:1/1
+│  ├──α rollouts-demo-754fbfc964-2                                   AnalysisRun  ✔ Successful  101s   ✔ 1
+│  │  └──⊞ 9d10e89c-9fb1-4c35-8675-83daa7774206.http-success-rate.1  Job          ✔ Successful  101s   
+│  └──α rollouts-demo-754fbfc964-2-4                                 AnalysisRun  ✔ Successful  76s    ✔ 1
+│     └──⊞ 0474fcd5-48ec-45ae-a020-26d5c0bf1b21.http-success-rate.1  Job          ✔ Successful  76s    
+└──# revision:1                                                                                        
+   └──⧉ rollouts-demo-774b46cfdc                                     ReplicaSet   • ScaledDown  5m9s   

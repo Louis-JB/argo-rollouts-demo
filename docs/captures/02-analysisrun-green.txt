@@ -1,0 +1,6 @@
+NAME                           STATUS       AGE
+rollouts-demo-754fbfc964-2     Successful   29s
+rollouts-demo-754fbfc964-2-4   Running      4s
+Sonde du canary http://rollouts-demo-canary/color (30 requetes, seuil 95%)
+Resultat : 30/30 requetes en succes -> 100% (seuil 95%)
+ANALYSE OK : canary sain, promotion autorisee.

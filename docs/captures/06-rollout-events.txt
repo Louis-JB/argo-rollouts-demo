@@ -1,0 +1,25 @@
+Events:
+  Type    Reason                  Age                 From                 Message
+  ----    ------                  ----                ----                 -------
+  Normal  RolloutAddedToInformer  6m34s               rollouts-controller  Rollout resource added to informer: demo/rollouts-demo
+  Normal  RolloutNotCompleted     6m34s               rollouts-controller  Rollout not completed, started update to revision 1 (774b46cfdc)
+  Normal  RolloutUpdated          6m33s               rollouts-controller  Rollout updated to revision 1
+  Normal  NewReplicaSetCreated    6m33s               rollouts-controller  Created ReplicaSet rollouts-demo-774b46cfdc (revision 1)
+  Normal  ScalingReplicaSet       6m33s               rollouts-controller  Scaled up ReplicaSet rollouts-demo-774b46cfdc (revision 1) from 0 to 5
+  Normal  RolloutCompleted        6m33s               rollouts-controller  Rollout completed update to revision 1 (774b46cfdc): Initial deploy
+  Normal  SwitchService           6m18s               rollouts-controller  Switched selector for service 'rollouts-demo-stable' from '' to '774b46cfdc'
+  Normal  SwitchService           6m18s               rollouts-controller  Switched selector for service 'rollouts-demo-canary' from '' to '774b46cfdc'
+  Normal  ScalingReplicaSet       3m45s               rollouts-controller  Scaled up ReplicaSet rollouts-demo-754fbfc964 (revision 2) from 0 to 1
+  Normal  RolloutUpdated          3m45s               rollouts-controller  Rollout updated to revision 2
+  Normal  NewReplicaSetCreated    3m45s               rollouts-controller  Created ReplicaSet rollouts-demo-754fbfc964 (revision 2)
+  Normal  ScalingReplicaSet       3m45s               rollouts-controller  Scaled down ReplicaSet rollouts-demo-774b46cfdc (revision 1) from 5 to 4
+  Normal  RolloutNotCompleted     3m45s               rollouts-controller  Rollout not completed, started update to revision 2 (754fbfc964)
+  Normal  SwitchService           3m35s               rollouts-controller  Switched selector for service 'rollouts-demo-canary' from '774b46cfdc' to '754fbfc964'
+  Normal  RolloutStepCompleted    3m35s               rollouts-controller  Rollout step 1/9 completed (setWeight: 20)
+  Normal  RolloutResumed          3m5s                rollouts-controller  Rollout is resumed
+  Normal  RolloutStepCompleted    3m5s                rollouts-controller  Rollout step 2/9 completed (pause: 30s)
+  Normal  ScalingReplicaSet       3m5s                rollouts-controller  Scaled down ReplicaSet rollouts-demo-774b46cfdc (revision 1) from 4 to 3
+  Normal  ScalingReplicaSet       3m5s                rollouts-controller  Scaled up ReplicaSet rollouts-demo-754fbfc964 (revision 2) from 1 to 2
+  Normal  AnalysisRunRunning      3m5s                rollouts-controller  Background Analysis Run 'rollouts-demo-754fbfc964-2' Status New: 'Running' Previous: ''
+  Normal  RolloutPaused           3m (x2 over 3m35s)  rollouts-controller  Rollout is paused (CanaryPauseStep)
+  Normal  RolloutStepCompleted    3m                  rollouts-controller  Rollout step 3/9 completed (setWeight: 40)

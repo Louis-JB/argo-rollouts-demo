@@ -1,0 +1,28 @@
+Sonde du canary http://rollouts-demo-canary/color (30 requetes, seuil 95%)
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+wget: server returned error: HTTP/1.1 500 Internal Server Error
+Resultat : 5/30 requetes en succes -> 16% (seuil 95%)
+ANALYSE KO : taux d'erreur trop eleve, rollback declenche.

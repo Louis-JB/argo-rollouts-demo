@@ -1,0 +1,38 @@
+Name:            rollouts-demo
+Namespace:       demo
+Status:          ✖ Degraded
+Message:         RolloutAborted: Rollout aborted update to revision 3: Metric "http-success-rate" assessed Failed due to failed (1) > failureLimit (0)
+Strategy:        Canary
+  Step:          0/9
+  SetWeight:     0
+  ActualWeight:  25
+Images:          argoproj/rollouts-demo:bad-red (canary)
+                 argoproj/rollouts-demo:green (stable)
+Replicas:
+  Desired:       5
+  Current:       6
+  Updated:       1
+  Ready:         4
+  Available:     4
+
+NAME                                                                 KIND         STATUS         AGE    INFO
+⟳ rollouts-demo                                                      Rollout      ✖ Degraded     6m21s  
+├──# revision:3                                                                                         
+│  ├──⧉ rollouts-demo-7c84cfdcdb                                     ReplicaSet   ✔ Healthy      58s    canary
+│  │  ├──□ rollouts-demo-7c84cfdcdb-qzt5x                            Pod          ✔ Running      58s    ready:1/1
+│  │  └──□ rollouts-demo-7c84cfdcdb-hdhqt                            Pod          ◌ Terminating  17s    ready:1/1
+│  └──α rollouts-demo-7c84cfdcdb-3                                   AnalysisRun  ✖ Failed       17s    ✖ 1
+│     └──⊞ 021d463e-6109-4b46-93de-600d302f6668.http-success-rate.1  Job          ✖ Failed       17s    
+├──# revision:2                                                                                         
+│  ├──⧉ rollouts-demo-754fbfc964                                     ReplicaSet   ◌ Progressing  3m32s  stable
+│  │  ├──□ rollouts-demo-754fbfc964-tjwb5                            Pod          ✔ Running      3m32s  ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-gh4z9                            Pod          ✔ Running      2m52s  ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-sbjfn                            Pod          ✔ Running      2m14s  ready:1/1
+│  │  ├──□ rollouts-demo-754fbfc964-pmbvr                            Pod          ✔ Running      4s     ready:0/1
+│  │  └──□ rollouts-demo-754fbfc964-qct2f                            Pod          ✔ Running      4s     ready:0/1
+│  ├──α rollouts-demo-754fbfc964-2                                   AnalysisRun  ✔ Successful   2m52s  ✔ 1
+│  │  └──⊞ 9d10e89c-9fb1-4c35-8675-83daa7774206.http-success-rate.1  Job          ✔ Successful   2m52s  
+│  └──α rollouts-demo-754fbfc964-2-4                                 AnalysisRun  ✔ Successful   2m27s  ✔ 1
+│     └──⊞ 0474fcd5-48ec-45ae-a020-26d5c0bf1b21.http-success-rate.1  Job          ✔ Successful   2m27s  
+└──# revision:1                                                                                         
+   └──⧉ rollouts-demo-774b46cfdc                                     ReplicaSet   • ScaledDown   6m20s  

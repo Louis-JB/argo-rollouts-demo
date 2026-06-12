@@ -1,0 +1,5 @@
+# LibreOffice lock files
+.~lock.*#
+# Python
+__pycache__/
+*.pyc

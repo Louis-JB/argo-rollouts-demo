@@ -1,0 +1,36 @@
+# Application ArgoCD : c'est LE cœur du GitOps.
+# ArgoCD surveille le dossier `manifests/` du dépôt Git et garde le cluster
+# en permanence synchronisé avec son contenu (self-healing + auto-sync).
+#
+# Boucle complète : git push  ->  ArgoCD sync  ->  Rollout (canary + analyse).
+#
+# >>> Remplacez `repoURL` par l'URL de VOTRE dépôt avant d'appliquer. <<<
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rollouts-demo
+  namespace: argocd
+  # garde-fou : ArgoCD nettoie les ressources si l'Application est supprimée
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/CHANGEME/argo-rollouts-demo.git
+    targetRevision: main
+    path: manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demo
+  syncPolicy:
+    automated:
+      prune: true       # supprime du cluster ce qui disparaît de Git
+      selfHeal: true    # corrige toute dérive manuelle (drift)
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m

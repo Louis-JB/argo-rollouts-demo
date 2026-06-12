@@ -1,0 +1,36 @@
+# VARIANTE "PRODUCTION" de l'analyse, basée sur Prometheus.
+# -------------------------------------------------------------------
+# Dans la vraie vie, l'application expose des métriques (ex: via un
+# service mesh comme Istio/Linkerd, un Ingress NGINX, ou un /metrics
+# applicatif). Argo Rollouts interroge alors Prometheus pour décider
+# automatiquement de promouvoir ou d'annuler le canary.
+#
+# Ce fichier N'EST PAS appliqué dans la démo (l'app rollouts-demo
+# n'expose pas /metrics) : il illustre le pattern réel attendu en entreprise.
+# La démo utilise à la place ../manifests/analysistemplate.yaml (provider Job).
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: success-rate-prometheus
+  namespace: demo
+spec:
+  args:
+    - name: service-name
+  metrics:
+    - name: success-rate
+      # Analyse pendant 5 mesures espacées de 30s ; il faut 95% de succès.
+      interval: 30s
+      count: 5
+      # Tolère au plus 2 mesures sous le seuil avant d'avorter.
+      failureLimit: 2
+      successCondition: result[0] >= 0.95
+      provider:
+        prometheus:
+          address: http://prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            sum(rate(
+              http_requests_total{service="{{args.service-name}}", status!~"5.."}[2m]
+            )) /
+            sum(rate(
+              http_requests_total{service="{{args.service-name}}"}[2m]
+            ))

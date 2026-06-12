@@ -1,0 +1,58 @@
+# Trois Services pour la stratégie canary :
+#  - rollouts-demo         : service "racine", sélectionne TOUS les pods (accès UI/utilisateur)
+#  - rollouts-demo-stable  : sélecteur géré par le contrôleur -> pointe vers la version STABLE
+#  - rollouts-demo-canary  : sélecteur géré par le contrôleur -> pointe vers la version CANARY
+#
+# En mode "basic canary" (sans service mesh), Argo Rollouts injecte automatiquement
+# le label `rollouts-pod-template-hash` dans les sélecteurs de stable/canary, ce qui
+# permet de cibler précisément les pods canary lors de l'analyse.
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo
+  namespace: demo
+  labels:
+    app: rollouts-demo
+spec:
+  type: ClusterIP
+  selector:
+    app: rollouts-demo
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo-stable
+  namespace: demo
+  labels:
+    app: rollouts-demo
+spec:
+  type: ClusterIP
+  selector:
+    app: rollouts-demo
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo-canary
+  namespace: demo
+  labels:
+    app: rollouts-demo
+spec:
+  type: ClusterIP
+  selector:
+    app: rollouts-demo
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

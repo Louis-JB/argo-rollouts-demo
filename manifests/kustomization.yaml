@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Ordre logique : namespace, puis l'analyse réutilisable, les services, et le Rollout.
+resources:
+  - namespace.yaml
+  - analysistemplate.yaml
+  - services.yaml
+  - rollout.yaml

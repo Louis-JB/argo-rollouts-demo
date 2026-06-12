@@ -1,0 +1,42 @@
+name: CI
+
+# Pipeline GitOps-friendly : on ne déploie PAS depuis la CI.
+# La CI VALIDE les manifests ; c'est ArgoCD qui déploie depuis Git (pull-based).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer kubeconform
+        run: |
+          curl -sSL -o /tmp/kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
+
+      - name: Rendu Kustomize
+        run: |
+          kubectl kustomize manifests/ > /tmp/rendered.yaml
+          cat /tmp/rendered.yaml
+
+      - name: Valider les manifests standards
+        # On ignore les CRD Argo (Rollout/AnalysisTemplate) côté schéma strict,
+        # mais on vérifie qu'ils sont du YAML/k8s bien formé.
+        run: |
+          kubeconform -strict -ignore-missing-schemas \
+            -schema-location default \
+            /tmp/rendered.yaml
+
+  lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: yamllint
+        run: |
+          pip install yamllint
+          yamllint -d "{extends: relaxed, rules: {line-length: disable}}" manifests/ gitops/ monitoring/

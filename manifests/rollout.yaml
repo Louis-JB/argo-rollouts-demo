@@ -1,0 +1,82 @@
+# Rollout : remplace un Deployment classique et ajoute la stratégie de
+# déploiement progressif (canary) avec étapes, pauses et analyse automatique.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollouts-demo
+  namespace: demo
+  labels:
+    app: rollouts-demo
+spec:
+  replicas: 5
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: rollouts-demo
+  template:
+    metadata:
+      labels:
+        app: rollouts-demo
+    spec:
+      containers:
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:blue
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
+          # IMPORTANT : probes TCP (et non HTTP /color).
+          # La version "bad-red" renvoie HTTP 500 mais le port reste ouvert :
+          # les pods deviennent donc "Ready", ce qui permet de démontrer un
+          # rollback piloté par L'ANALYSE (taux d'erreur), et non par la santé.
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+  strategy:
+    canary:
+      stableService: rollouts-demo-stable
+      canaryService: rollouts-demo-canary
+      # Analyse "background" : tourne en continu pendant tout le rollout
+      # et l'avorte dès que le canary se dégrade, sans attendre une étape.
+      analysis:
+        templates:
+          - templateName: success-rate
+        startingStep: 2   # démarre une fois 40% du trafic basculé
+        args:
+          - name: canary-service
+            value: rollouts-demo-canary
+      steps:
+        - setWeight: 20
+        - pause:
+            duration: 30s
+        - setWeight: 40
+        - pause:
+            duration: 20s
+        # Analyse bloquante en plein milieu : gate explicite avant d'aller plus loin
+        - analysis:
+            templates:
+              - templateName: success-rate
+            args:
+              - name: canary-service
+                value: rollouts-demo-canary
+        - setWeight: 60
+        - pause:
+            duration: 20s
+        - setWeight: 80
+        - pause:
+            duration: 20s
+        # étape finale implicite -> 100% (promotion complète)
