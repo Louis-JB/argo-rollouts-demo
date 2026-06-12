@@ -398,7 +398,7 @@ add_pic(s, "img/dashboard-demo1.png", x=4.55, y=1.65, max_w=8.0, max_h=4.6)
 _text(s, 4.55, 6.32, 8.0, 0.35,
       [[R("Dashboard réel : étapes du canary à gauche, ", 11, MUTED),
         R("analyse ✓ verte", 11, GREEN, True),
-        R(" sur la révision canary → la promotion se poursuit.", 11, MUTED)]])
+        R(" sur la révision canary → canary validé, promotion autorisée.", 11, MUTED)]])
 
 # --- Démo 2
 s = prs.slides.add_slide(BLANK); header(s, "Démo 2 — Canary défaillant", "Rollback automatique")
