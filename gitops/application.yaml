@@ -16,7 +16,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/CHANGEME/argo-rollouts-demo.git
+    repoURL: https://github.com/Louis-JB/argo-rollouts-demo.git
     targetRevision: main
     path: manifests
   destination:
