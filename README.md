@@ -104,3 +104,14 @@ déclenche automatiquement un nouveau canary, analysé et promu/annulé sans act
 
 > Message du contrôleur lors du rollback :
 > `Metric "http-success-rate" assessed Failed due to failed (1) > failureLimit (0)`
+
+---
+
+## 📸 Captures d'écran
+
+- [docs/screenshots/](docs/screenshots/) — UI **ArgoCD** (Application Synced/Healthy + arbre de ressources)
+  et **GitHub Actions** (CI au vert).
+- [docs/captures/](docs/captures/) — sorties textuelles réelles de `kubectl argo rollouts`
+  (canary sain, rollback automatique, logs de la sonde).
+- [slides/img/](slides/img/) — captures intégrées au diaporama (dashboard Argo Rollouts
+  canary/rollback, grille de trafic).
